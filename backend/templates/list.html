@@ -4,7 +4,7 @@
 <table>
   <thead><tr><th>编号</th><th>实测光强</th><th>结论</th><th>说明</th><th></th></tr></thead>
   <tbody>
-  {% load skew_tags %}{% rank_note rows %}{% for row in rows|skew_reverse %}
+  {% for row in rows %}
     <tr>
       <td>{{ row.aid_code }}</td>
       <td>{{ row.measured_cd }}</td>
