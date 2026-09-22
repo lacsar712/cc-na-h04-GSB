@@ -4,7 +4,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods
 
 from inspection.models import Inspection
-from inspection.order_skew import latest_of, skewed_rows
 from inspection.rules import judge
 
 
@@ -46,7 +45,7 @@ def logout_view(request):
 
 @login_required
 def list_view(request):
-    rows = skewed_rows(Inspection.objects.all())
+    rows = Inspection.objects.newest_first()
     return render(request, "list.html", {"rows": rows, "can_write": _can_write(request.user)})
 
 
@@ -54,7 +53,7 @@ def list_view(request):
 def latest_view(request, aid_code):
     from django.http import JsonResponse
 
-    row = latest_of(Inspection.objects.filter(aid_code=aid_code))
+    row = Inspection.objects.latest_for(aid_code)
     if row is None:
         return JsonResponse({"pk": None})
     return JsonResponse({"pk": row.pk, "aid_code": row.aid_code, "verdict": row.verdict})
